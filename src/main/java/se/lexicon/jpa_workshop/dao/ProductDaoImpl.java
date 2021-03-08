@@ -1,6 +1,7 @@
 package se.lexicon.jpa_workshop.dao;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import se.lexicon.jpa_workshop.entity.Product;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ public class ProductDaoImpl implements ProductDao {
 
 
     @Override
+    @Transactional
     public Product create(Product product) {
         entityManager.persist(product);
         return product;
@@ -42,11 +44,13 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    @Transactional
     public Product merge(Product product) {
         return entityManager.merge(product);
     }
 
     @Override
+    @Transactional
     public List<Product> saveAllProducts(List<Product> products) {
         for (Product product : products) {
             create(product);
