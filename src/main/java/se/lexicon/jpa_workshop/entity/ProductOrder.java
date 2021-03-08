@@ -1,19 +1,30 @@
 package se.lexicon.jpa_workshop.entity;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class ProductOrder {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private LocalDate orderDate;
     private LocalTime orderTime;
 
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            mappedBy = "productOrder",
+            orphanRemoval = true // jpa provide plan to remove when the child entity is removed from the collection
+    )
     private List<OrderItem> orderItems;
 
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "app_user_id")
     private AppUser customer;
 
     public ProductOrder() {
@@ -80,11 +91,11 @@ public class ProductOrder {
         orderItem.setProductOrder(null);
     }
 
-    public double calculateOrderItemsTotalPrice(){
+    public double calculateOrderItemsTotalPrice() {
         //return orderItems.stream().mapToDouble(OrderItem::calculateOrderItemPrice).sum();
 
         double totalPrice = 0;
-        for (OrderItem orderItem : orderItems){
+        for (OrderItem orderItem : orderItems) {
             totalPrice += orderItem.calculateOrderItemPrice();
         }
         return totalPrice;

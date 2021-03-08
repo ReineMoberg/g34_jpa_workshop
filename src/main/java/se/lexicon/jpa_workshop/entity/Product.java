@@ -1,10 +1,16 @@
 package se.lexicon.jpa_workshop.entity;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false,length = 100)
     private String name;
+    @Column(nullable = false)
     private int price;
 
     public Product() {
